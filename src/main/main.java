@@ -6,10 +6,7 @@ public class main {
 		System.out.println("------------------------------");
 		System.out.println("Arel Bankacılığa Hoş Geldiniz!");
 		System.out.println("------------------------------");
-		//Scanner scanner = new Scanner(System.in);
-		//int tckn = scanner.nextLine();
-		
-	//	System.out.println(tckn);
+
 		
 		
 	}
