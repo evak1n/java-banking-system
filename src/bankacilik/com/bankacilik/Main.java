@@ -64,7 +64,7 @@ public class Main {
     }
 
 private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
-    Hesap aktifHesap = null;
+	Hesap aktifHesap = bank.hesapBulByTckn(m.getTckn());
 
     while (true) {
         System.out.println("\n=== İŞLEM MENÜSÜ ===");
@@ -79,12 +79,17 @@ private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
         switch (secim) {
             case "0" -> {
                 if (aktifHesap == null) {
-                    aktifHesap = new VadesizHesap(100001, 0.0);
-                    System.out.println("Hesap açıldı. Hesap No: " + aktifHesap.getHesapNo());
-                } else {
-                    System.out.println("Zaten bir hesabınız var.");
+                	try {
+                		aktifHesap = bank.hesapAcVadesiz(m.getTckn());
+                            System.out.println("Hesap açıldı. Hesap No: " + aktifHesap.getHesapNo());
+                        } catch (Exception e) {
+                            System.out.println("Hesap açma hatası: " + e.getMessage());
+                        }
+                    } else {
+                        System.out.println("Zaten bir hesabınız var.");
+                    }
                 }
-            }
+
             case "1" -> {
                 if (aktifHesap == null) { System.out.println("Önce hesap açın."); break; }
                 System.out.println("Bakiye: " + aktifHesap.getBakiye() + " TL");
@@ -92,18 +97,29 @@ private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
             case "2" -> {
                 if (aktifHesap == null) { System.out.println("Önce hesap açın."); break; }
                 System.out.print("Yatırılacak miktar: ");
-                double miktar = Double.parseDouble(sec.nextLine());
-                if (miktar > 0) {
-                    aktifHesap.paraYatir(miktar);
-                } else {
-                    System.out.println("Geçersiz miktar!");
+                String giris = sec.nextLine();
+                try {
+                    double miktar = Double.parseDouble(giris);
+                    if (miktar > 0) {
+                        aktifHesap.paraYatir(miktar);
+                    } else {
+                        System.out.println("Geçersiz miktar!");
+                    }
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Lütfen geçerli bir sayı girin.");
                 }
             }
             case "3" -> {
                 if (aktifHesap == null) { System.out.println("Önce hesap açın."); break; }
                 System.out.print("Çekilecek miktar: ");
-                double miktar = Double.parseDouble(sec.nextLine());
-                aktifHesap.paraCek(miktar);
+                String giris = sec.nextLine();
+
+                try {
+                    double miktar = Double.parseDouble(giris);
+                    aktifHesap.paraCek(miktar);
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Lütfen geçerli bir sayı girin.");
+                }
             }
             case "9" -> {
                 System.out.println("Ana menüye dönülüyor...");
