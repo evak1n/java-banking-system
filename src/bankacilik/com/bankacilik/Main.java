@@ -72,6 +72,8 @@ private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
         System.out.println("[1] Bakiye Görüntüle");
         System.out.println("[2] Para Yatır");
         System.out.println("[3] Para Çek");
+        System.out.println("[4] Transfer (hesap no ile)");
+        System.out.println("[5] Hareketleri Gör");
         System.out.println("[9] Oturumdan Çık");
         System.out.print("Seçiminiz: ");
         String secim = sec.nextLine().trim();
@@ -121,6 +123,51 @@ private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
                     System.out.println("Lütfen geçerli bir sayı girin.");
                 }
             }
+         case "4" -> {
+             System.out.print("Kaynak Hesap No (boş bırak = kendi hesabın): ");
+             String kaynakStr = sec.nextLine().trim();
+             int kaynakNo;
+             if (kaynakStr.isBlank()) {
+                 Hesap aktifHesap1 = bank.hesapBulByTckn(m.getTckn());
+                 if (aktifHesap1 == null) { System.out.println("Önce hesap açın."); break; }
+                 kaynakNo = aktifHesap1.getHesapNo();
+             } else {
+                 try { kaynakNo = Integer.parseInt(kaynakStr); }
+                 catch (NumberFormatException e) { System.out.println("Geçersiz hesap no!"); break; }
+             }
+
+             System.out.print("Hedef Hesap No: ");
+             String hedefStr = sec.nextLine().trim();
+             int hedefNo;
+             try { hedefNo = Integer.parseInt(hedefStr); }
+             catch (NumberFormatException e) { System.out.println("Geçersiz hesap no!"); break; }
+
+             System.out.print("Miktar: ");
+             String miktarStr = sec.nextLine().trim();
+             double miktar;
+             try { miktar = Double.parseDouble(miktarStr); }
+             catch (NumberFormatException e) { System.out.println("Geçersiz miktar!"); break; }
+
+             System.out.print("Açıklama (opsiyonel): ");
+             String aciklama = sec.nextLine();
+
+             try {
+                 bank.transferByNo(kaynakNo, hedefNo, miktar, aciklama);
+             } catch (Exception e) {
+                 System.out.println("Transfer hatası: " + e.getMessage());
+             }
+         }
+         case "5" -> {
+             System.out.print("Hesap No: ");
+             String hesapStr = sec.nextLine().trim();
+             try {
+                 int hesapNo = Integer.parseInt(hesapStr);
+                 bank.hareketleriYazdir(hesapNo);
+             } catch (NumberFormatException e) {
+                 System.out.println("Geçersiz hesap no!");
+             }
+         }
+
             case "9" -> {
                 System.out.println("Ana menüye dönülüyor...");
                 return;
