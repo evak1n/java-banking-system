@@ -9,6 +9,9 @@ public class VadeliHesap extends Hesap {
         super(hesapNo, bakiye);
         this.faizOrani = faizOrani;
     }
+    public double getFaizOrani() {
+        return faizOrani;
+    }
     @Override
     public boolean paraCek(double miktar) {
     	 if (!(Double.isFinite(miktar) && miktar > 0)) {
