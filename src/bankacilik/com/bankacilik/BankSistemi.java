@@ -55,4 +55,29 @@
 	        hesapCount++;
 	        return h;
 	    }
+	 public void transferByNo(int fromNo, int toNo, double miktar, String aciklama) {
+	     Hesap from = null, to = null;
+	     for (int i = 0; i < hesapCount; i++) {
+	         if (hesaplar[i].getHesapNo() == fromNo) from = hesaplar[i];
+	         if (hesaplar[i].getHesapNo() == toNo) to = hesaplar[i];
+	     }
+	     if (from == null || to == null) throw new IllegalArgumentException("Hesap bulunamadı!");
+	     from.transferTo(to, miktar, aciklama);
+	 }
+
+	 public void hareketleriYazdir(int hesapNo) {
+	     Hesap h = null;
+	     for (int i = 0; i < hesapCount; i++) {
+	         if (hesaplar[i].getHesapNo() == hesapNo) {
+	             h = hesaplar[i];
+	             break;
+	         }
+	     }
+	     if (h != null) {
+	         h.getHareketler().forEach(System.out::println);
+	     } else {
+	         System.out.println("Hesap bulunamadı!");
+	     }
+	 }
+
 	}

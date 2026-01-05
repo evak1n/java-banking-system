@@ -33,24 +33,24 @@ public abstract class Hesap {
         }
     }
     
-    public void paraYatir(double miktar) {	
-        if (miktar > 0 && Double.isFinite(miktar)) {
-            this.bakiye += miktar;
-            System.out.println("Yatırılan: " + miktar + " TL | Yeni Bakiye: " + this.bakiye + " TL");
-
-            kaydetIslem(new Transaction(
-                              Transaction.Type.DEPOSIT,
-                              null, this.hesapNo,
-                              miktar,
-                              LocalDateTime.now(),
-                              null,
-                              this.bakiye
-                      ));
-
-        } else {
-            System.out.println("Geçersiz miktar!");
+    public boolean paraYatir(double miktar) {
+        if (!(Double.isFinite(miktar) && miktar > 0)) {
+            throw new IllegalArgumentException("Geçersiz miktar!");
         }
-    }
+        this.bakiye += miktar;
+
+        kaydetIslem(new Transaction(
+            Transaction.Type.DEPOSIT,
+            getHesapNo(),
+            null,
+            miktar,
+            LocalDateTime.now(),
+            "Para yatırma",
+            this.getBakiye()
+        ));
+
+        return true;
+        }
     public abstract boolean paraCek(double miktar);
     
 
