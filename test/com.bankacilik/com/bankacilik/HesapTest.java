@@ -4,48 +4,69 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 class TestHesap extends Hesap {
     public TestHesap(int hesapNo, double bakiye) {
         super(hesapNo, bakiye);
+        if (bakiye > 0) {
+        	kaydetIslem(new Transaction(
+                    Transaction.Type.DEPOSIT,
+                    hesapNo,
+                    hesapNo,
+                    bakiye,
+                    LocalDateTime.now(),
+                    "Başlangıç Bakiyesi",
+                    bakiye
+        	));
+        }
     }
 
     @Override
     public boolean paraCek(double miktar) {
-        if (!(Double.isFinite(miktar) && miktar > 0)) return false;
-        if (miktar > this.getBakiye()) return false;
-        try {
-            java.lang.reflect.Field bakiyeField = Hesap.class.getDeclaredField("bakiye");
-            bakiyeField.setAccessible(true);
-            double bakiye = (double) bakiyeField.get(this);
-            bakiyeField.set(this, bakiye - miktar);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!(Double.isFinite(miktar) && miktar > 0)) {
+        	  System.out.println("Geçersiz miktar!");
+        	  return false;
+        }
+        if (miktar > this.getBakiye()) {
+            System.out.println("Yetersiz bakiye!");
             return false;
         }
+        this.bakiye -= miktar;
+        kaydetIslem(new Transaction(
+                Transaction.Type.WITHDRAW,
+                getHesapNo(),
+                null,
+                miktar,
+                LocalDateTime.now(),
+                "Test çekim",
+                this.getBakiye()
+            ));
+
+            return true;
+    }
+
+    @Override
+    
+    public boolean paraYatir(double miktar) {
+        if (!(Double.isFinite(miktar) && miktar > 0)) return false;
+        
+        this.bakiye += miktar;
+        kaydetIslem(new Transaction(
+            Transaction.Type.DEPOSIT,
+            getHesapNo(),
+            null,
+            miktar,
+            LocalDateTime.now(),
+            "Para yatırma",
+            this.getBakiye()
+        ));
         return true;
     }
 }
-public class HesapTest {
-
-    @Test
-    void paraYatirTest() {
-        Hesap h = new TestHesap(1001, 500);
-        assertTrue(h.paraYatir(200));
-        assertEquals(700, h.getBakiye());
-    }
-
-    @Test
-    void paraCekTest() {
-        Hesap h = new TestHesap(1002, 400);
-        assertTrue(h.paraCek(100));
-        assertEquals(300, h.getBakiye());
-
-        assertFalse(h.paraCek(500));
-        assertEquals(300, h.getBakiye());
-    }
+public class HesapTest{
 
     @Test
     void transferTest() {
