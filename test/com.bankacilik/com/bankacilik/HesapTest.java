@@ -11,17 +11,6 @@ import java.util.List;
 class TestHesap extends Hesap {
     public TestHesap(int hesapNo, double bakiye) {
         super(hesapNo, bakiye);
-        if (bakiye > 0) {
-        	kaydetIslem(new Transaction(
-                    Transaction.Type.DEPOSIT,
-                    hesapNo,
-                    hesapNo,
-                    bakiye,
-                    LocalDateTime.now(),
-                    "Başlangıç Bakiyesi",
-                    bakiye
-        	));
-        }
     }
 
     @Override
