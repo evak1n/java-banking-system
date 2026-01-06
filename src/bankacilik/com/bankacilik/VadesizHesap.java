@@ -12,14 +12,11 @@ public class VadesizHesap extends Hesap {
     public boolean paraCek(double miktar) {
 
         if (!(Double.isFinite(miktar) && miktar > 0)) {
-            System.out.println("Geçersiz miktar!");
-            return false;
+            throw new IllegalArgumentException("Geçersiz miktar!"); 
         }
 
-        if (miktar > this.bakiye) {
-            System.out.println("Yetersiz Bakiye! İşlem yapılamadı.");
-            return false;
-        }
+        if (miktar > this.bakiye)  return false;
+        
 
         this.bakiye -= miktar;
                System.out.println("Çekilen: " + miktar + " TL | Kalan: " + this.bakiye + " TL");
@@ -30,12 +27,30 @@ public class VadesizHesap extends Hesap {
                        null,
                        miktar,
                        LocalDateTime.now(),
-                       null,
+                       "Para çekme",
                        this.getBakiye()
                ));
 
                return true;
            }
+    public boolean paraYatir(double miktar) {
+        if (!(Double.isFinite(miktar) && miktar > 0)) {
+            throw new IllegalArgumentException("Geçersiz miktar!");
+        }
+        this.bakiye += miktar;
+
+        kaydetIslem(new Transaction(
+            Transaction.Type.DEPOSIT,
+            getHesapNo(),
+            null,
+            miktar,
+            LocalDateTime.now(),
+            "Para yatırma",
+            this.getBakiye()
+        ));
+
+        return true;
+        }
 
     @Override
     public String toString() {
