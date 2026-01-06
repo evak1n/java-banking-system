@@ -13,6 +13,11 @@ public class VadesizHesapTest {
     void setUp() {
         hesap = new VadesizHesap(4004, 250.0);
     }
+    @Test
+    void testParaYatir() {
+        assertTrue(hesap.paraYatir(100));
+        assertEquals(350.0, hesap.getBakiye(), 0.001);
+    }
 
     @Test
     void testParaCek() {
