@@ -2,11 +2,17 @@ package com.bankacilik;
 
 import java.util.Scanner;
 
+/**
+ * Banka uygulamasının giriş sınıfı.
+ * Kullanıcı girişi, kayıt ve işlem menüsü burada yönetilir.
+ */
 public class Main {
     public static void main(String[] args) {
-        BankSistemi bank = new BankSistemi();
-        Scanner sec = new Scanner(System.in);
+    	
+        BankSistemi bank = new BankSistemi();	// Banka sistemi nesnesi
+        Scanner sec = new Scanner(System.in);	// Kullanıcı girişleri için scanner
 
+        // Sonsuz döngü ile ana menü
         while (true) {
             System.out.println("\n=== ANA MENÜ ===");
             System.out.println("[1] Kullanıcı Girişi");
@@ -16,14 +22,23 @@ public class Main {
             String secim = sec.nextLine().trim();
 
             switch (secim) {
-                case "1" -> giris(sec, bank);
-                case "2" -> kayit(sec, bank);
-                case "0" -> { System.out.println("Çıkış yapılıyor..."); sec.close(); return; }
+                case "1" -> giris(sec, bank);	// Kullanıcı girişi
+                case "2" -> kayit(sec, bank);	// Yeni kullanıcı kaydı
+                case "0" -> { 					 // Programdan çıkış
+                	System.out.println("Çıkış yapılıyor..."); sec.close(); 
+                	return;
+                	}
                 default -> System.out.println("Geçersiz seçim!");
             }
         }
     }
 
+    /**
+     * Kullanıcı giriş ekranı.
+     *
+     * @param sec  Scanner nesnesi
+     * @param bank Banka sistemi
+     */
     private static void giris(Scanner sec, BankSistemi bank) {
         System.out.println("\n— Kullanıcı Girişi —");
         System.out.print("TCKN: ");
@@ -40,6 +55,12 @@ public class Main {
         }
     }
 
+    /**
+     * Yeni kullanıcı kayıt ekranı.
+     *
+     * @param sec  Scanner nesnesi
+     * @param bank Banka sistemi
+     */
     private static void kayit(Scanner sec, BankSistemi bank) {
         System.out.println("\n— Yeni Kullanıcı Kaydı —");
         System.out.print("TCKN (11 hane): ");
@@ -49,6 +70,7 @@ public class Main {
         System.out.print("Şifre (min 4 karakter): ");
         String sifre = sec.nextLine();
 
+        // Geçerlilik kontrolü
         boolean valid =
             tckn.length() == 11 && tckn.chars().allMatch(Character::isDigit) &&
             !adSoyad.isBlank() &&
@@ -63,10 +85,17 @@ public class Main {
         System.out.println(ok ? "Kayıt başarılı." : "Kayıt başarısız (kapasite dolu olabilir).");
     }
 
-private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
-	Hesap aktifHesap = bank.hesapBulByTckn(m.getTckn());
+    /**
+     * Kullanıcının işlem menüsü. Para yatırma, çekme, transfer ve hareketleri görüntüleme işlemleri yapılır.
+     *
+     * @param sec Scanner nesnesi
+     * @param bank Banka sistemi
+     * @param m Kullanıcı nesnesi
+     */
+    	private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
+    		Hesap aktifHesap = bank.hesapBulByTckn(m.getTckn());
 
-    while (true) {
+    		while (true) {
         System.out.println("\n=== İŞLEM MENÜSÜ ===");
         System.out.println("[0] Hesap Aç");
         System.out.println("[1] Bakiye Görüntüle");
@@ -123,7 +152,7 @@ private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
                     System.out.println("Lütfen geçerli bir sayı girin.");
                 }
             }
-         case "4" -> {
+         case "4" -> {	// Hesap no ile transfer
              System.out.print("Kaynak Hesap No (boş bırak = kendi hesabın): ");
              String kaynakStr = sec.nextLine().trim();
              int kaynakNo;
@@ -157,7 +186,7 @@ private static void islemMenusu(Scanner sec, BankSistemi bank, Musteri m) {
                  System.out.println("Transfer hatası: " + e.getMessage());
              }
          }
-         case "5" -> {
+         case "5" -> { 	 // Hesap hareketlerini görüntüleme
              System.out.print("Hesap No: ");
              String hesapStr = sec.nextLine().trim();
              try {
